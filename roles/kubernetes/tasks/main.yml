@@ -1,0 +1,10 @@
+---
+- name: Prerequisite setup tasks
+  include: pre-setup.yml
+
+- name: install and configure docker 
+  include: install_docker.yml
+
+- name: install k8s
+  include: install_k8s.yml
+

@@ -1,0 +1,30 @@
+- hosts: all
+  become: yes
+  tasks:
+    - name: create user
+      user: 
+        name: techuser
+        append: yes 
+        state: present
+        createhome: yes
+        shell: /bin/bash
+
+    - name: allow techuser to have passwordless sudo
+      lineinfile:
+        dest: /etc/sudoers
+        line: 'techuser ALL=(ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
+
+    - name: Stop firewalld service
+      service:
+        name: firewalld
+        state: stopped
+        enabled: no
+        daemon_reload: yes
+
+    - name: set up authorized keys for techuser user
+      authorized_key: user=techuser key="{{ item }}"
+      with_file:
+        - ~/.ssh/id_rsa.pub
+
+
